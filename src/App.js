@@ -1,22 +1,36 @@
-import { useEffect } from 'react';
-import './App.css';
-
-
-
+import React, { useState, useEffect } from 'react';
 
 function App() {
-  const {user, onClose} = useTelegram();
+  const tg = window.Telegram.WebApp;
+  const [counter, setCounter] = useState(0);
+  const [tgReady, setTgReady] = useState(false);
 
 
-useEffect(()=>{
-tg.ready();
-},[])
 
+  tg.expand();
+  tg.onReady(() => {
+    // код, который будет выполнен, когда Telegram готов
+  });
 
+  useEffect(() => {
+    tg.expand();
+    tg.onReady(() => {
+      setTgReady(true);
+    });
+  }, []);
+
+  const handleCounterClick = () => {
+    setCounter(counter + 1);
+  };
 
   return (
-    <div className="App">
-Скоро будут сочные дыньки. Не забывай про нас.
+    <div>
+      {tgReady && (
+        <div>
+          <img src="melon.png" alt="melon" onClick={handleCounterClick} />
+          <p>Счет: {counter}</p>
+        </div>
+      )}
     </div>
   );
 }
