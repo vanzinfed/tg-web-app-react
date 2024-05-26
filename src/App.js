@@ -27,6 +27,7 @@ function App() {
     <div>
       {tgReady && (
         <div>
+          пиздец какойто
           <img src="melon.png" alt="melon" onClick={handleCounterClick} />
           <p>Счет: {counter}</p>
         </div>
