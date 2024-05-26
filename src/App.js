@@ -5,7 +5,7 @@ import './App.css';
 
 
 function App() {
-
+  const {user, onClose} = useTelegram();
 
 
 useEffect(()=>{
