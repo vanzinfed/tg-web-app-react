@@ -9,6 +9,7 @@ import './App.css';
 function App() {
   const [count, setCount] = useState(0);
   const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -17,7 +18,8 @@ function App() {
     if (telegramData) {
       const userData = JSON.parse(window.atob(telegramData));
       setUserId(userData.id);
-      // Загрузка количества очков из localStorage для данного пользователя
+      setUsername(userData.username); // Assuming 'username' field exists
+      // Load click count from localStorage
       const savedCount = localStorage.getItem(`clickCount_${userData.id}`);
       if (savedCount) {
         setCount(parseInt(savedCount, 10));
@@ -33,14 +35,19 @@ function App() {
 
   const handleClick = () => {
     setCount(count + 1);
+    const melon = document.querySelector('.melon-image');
+    melon.classList.add('clicked');
+    setTimeout(() => {
+      melon.classList.remove('clicked');
+    }, 500);
   };
 
   return (
     <Router>
       <div className="App">
         <header className="App-header">
-          <h1>Melon Clicker Game</h1>
-          <p>Clicks: {count}</p>
+          <div className="username-display">{username}</div>
+          <div className="click-counter">Count clicks: {count}</div>
           <Routes>
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/referrals" element={<Referrals userId={userId} />} />
@@ -54,22 +61,14 @@ function App() {
           </Routes>
         </header>
         <nav className="App-nav">
-          <Link to="/">Mining</Link>
-          <Link to="/upgrade">Upgrade</Link>
-          <Link to="/referrals">Referrals</Link>
-          <Link to="/tasks">Tasks</Link>
+          <Link to="/" className="nav-link">Mine</Link>
+          <Link to="/upgrade" className="nav-link">Upgrade</Link>
+          <Link to="/referrals" className="nav-link">Referrals</Link>
+          <Link to="/tasks" className="nav-link">Tasks</Link>
         </nav>
       </div>
     </Router>
   );
 }
-
-const styles = {
-  melonImage: {
-    cursor: 'pointer',
-    width: '200px',
-    height: 'auto',
-  }
-};
 
 export default App;
