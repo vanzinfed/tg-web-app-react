@@ -1,5 +1,4 @@
-  const tg = window.Telegram.WebApp;
-  import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Mining from './components/Mining';
 import Upgrade from './components/Upgrade';
@@ -18,20 +17,19 @@ function App() {
     if (telegramData) {
       const userData = JSON.parse(window.atob(telegramData));
       setUserId(userData.id);
+      // Загрузка количества очков из localStorage для данного пользователя
+      const savedCount = localStorage.getItem(`clickCount_${userData.id}`);
+      if (savedCount) {
+        setCount(parseInt(savedCount, 10));
+      }
     }
   }, []);
-
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const referralId = urlParams.get('ref');
-  
-    if (referralId) {
-      // Обработка реферального перехода (например, отправка данных на сервер)
-      console.log(`Referral ID: ${referralId}`);
+    if (userId !== null) {
+      localStorage.setItem(`clickCount_${userId}`, count);
     }
-  }, []);
-
+  }, [count, userId]);
 
   const handleClick = () => {
     setCount(count + 1);
@@ -47,9 +45,13 @@ function App() {
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/referrals" element={<Referrals userId={userId} />} />
             <Route path="/tasks" element={<Tasks />} />
-            <Route path="/" element={<Mining />} />
+            <Route path="/" element={
+              <>
+                <Mining />
+                <img src="melon.png" alt="Melon" onClick={handleClick} style={styles.melonImage} />
+              </>
+            } />
           </Routes>
-          <img src="melon.png" alt="Melon" onClick={handleClick} style={styles.melonImage} />
         </header>
         <nav className="App-nav">
           <Link to="/">Mining</Link>
