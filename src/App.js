@@ -46,10 +46,10 @@ function App() {
             <Route path="/referrals" element={<Referrals userId={userId} />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/" element={
-              <>
+              <div className="content-center">
                 <Mining />
-                <img src="melon.png" alt="Melon" onClick={handleClick} style={styles.melonImage} />
-              </>
+                <img src="melon.png" alt="Melon" onClick={handleClick} className="melon-image" />
+              </div>
             } />
           </Routes>
         </header>
