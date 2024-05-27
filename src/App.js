@@ -1,39 +1,73 @@
-import React, { useState, useEffect } from 'react';
+  const tg = window.Telegram.WebApp;
+  import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Mining from './components/Mining';
+import Upgrade from './components/Upgrade';
+import Referrals from './components/Referrals';
+import Tasks from './components/Tasks';
+import './App.css';
 
 function App() {
-  const tg = window.Telegram.WebApp;
-  const [counter, setCounter] = useState(0);
-  const [tgReady, setTgReady] = useState(false);
-
-
-
-  tg.expand();
-  tg.onReady(() => {
-    // код, который будет выполнен, когда Telegram готов
-  });
+  const [count, setCount] = useState(0);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    tg.expand();
-    tg.onReady(() => {
-      setTgReady(true);
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const telegramData = urlParams.get('telegramWebAppData');
+
+    if (telegramData) {
+      const userData = JSON.parse(window.atob(telegramData));
+      setUserId(userData.id);
+    }
   }, []);
 
-  const handleCounterClick = () => {
-    setCounter(counter + 1);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const referralId = urlParams.get('ref');
+  
+    if (referralId) {
+      // Обработка реферального перехода (например, отправка данных на сервер)
+      console.log(`Referral ID: ${referralId}`);
+    }
+  }, []);
+
+
+  const handleClick = () => {
+    setCount(count + 1);
   };
 
   return (
-    <div>
-      {tgReady && (
-        <div>
-          пиздец какойто
-          <img src="melon.png" alt="melon" onClick={handleCounterClick} />
-          <p>Счет: {counter}</p>
-        </div>
-      )}
-    </div>
+    <Router>
+      <div className="App">
+        <header className="App-header">
+          <h1>Melon Clicker Game</h1>
+          <p>Clicks: {count}</p>
+          <Routes>
+            <Route path="/upgrade" element={<Upgrade />} />
+            <Route path="/referrals" element={<Referrals userId={userId} />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/" element={<Mining />} />
+          </Routes>
+          <img src="melon.png" alt="Melon" onClick={handleClick} style={styles.melonImage} />
+        </header>
+        <nav className="App-nav">
+          <Link to="/">Mining</Link>
+          <Link to="/upgrade">Upgrade</Link>
+          <Link to="/referrals">Referrals</Link>
+          <Link to="/tasks">Tasks</Link>
+        </nav>
+      </div>
+    </Router>
   );
 }
+
+const styles = {
+  melonImage: {
+    cursor: 'pointer',
+    width: '200px',
+    height: 'auto',
+  }
+};
 
 export default App;
